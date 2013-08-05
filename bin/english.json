@@ -1,0 +1,16 @@
+{
+	"key1": "value1",
+	"bundle1": {
+		"key1": "bundle1.value1"
+	},
+	"bundle2": {
+		"bundle3": {
+			"key1": "bundle2.bundle3.value1",
+			"key2": "bundle2.bundle3.value2"
+		}
+	},
+	"root1": {
+		"__TRANSLATE__justSomeTest": "I think this will work!",
+		"_justSomeTestTxt": "Hope this also works"
+	}
+}
