@@ -1,4 +1,5 @@
 package org.ranapat.localization {
+	import com.adobe.serialization.json.JSON;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.events.Event;
@@ -26,6 +27,8 @@ package org.ranapat.localization {
 		private var _language:String;
 		private var _dataLoader:DataLoader;
 		private var _supportedLanguage:SupportedLanguage;
+		private var _collectMode:Boolean;
+		private var _collected:Object;
 		
 		public function Localization() {
 			if (Localization._allowInstance) {
@@ -62,9 +65,36 @@ package org.ranapat.localization {
 			return this._language;
 		}
 		
-		public function get(key:String, bundle:String = null):String {
-			return this._supportedLanguage? this._supportedLanguage.get(key, bundle) : "";
+		public function set collectMode(value:Boolean):void {
+			if (value != this._collectMode) {
+				this._collected = { };
+			}
+			
+			this._collectMode = value;
 		}
+		
+		public function get collectMode():Boolean {
+			return this._collectMode;
+		}
+		
+		public function get collected():String {
+			return JSON.encode(this._collected);
+		}
+		
+		public function get(key:String, bundle:String = null):String {
+			var result:String = this._supportedLanguage? this._supportedLanguage.get(key, bundle) : ("??" + key + " .. " + this._supportedLanguage + "??");
+			if (this.collectMode) {
+				if (bundle) {
+					if (!this._collected[bundle]) {
+						this._collected[bundle] = { };
+					}
+					this._collected[bundle][key] = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : Settings.MISSING_TRANSLATION_STRING;
+				} else {
+					this._collected[key] = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : Settings.MISSING_TRANSLATION_STRING;
+				}
+			}
+			return result;
+		}		
 		
 		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {
 			var length:uint = object.numChildren;
@@ -106,7 +136,7 @@ package org.ranapat.localization {
 		private function translateDisplayObject(object:DisplayObject, container:DisplayObjectContainer):void {
 			if (object is TextField) {
 				var tmp:TextField = object as TextField;
-				tmp.text = this.get(tmp.name, container.name);
+				tmp.text = this.get(tmp.name, Tools.getClassName(container));
 			}
 		}
 		

@@ -3,13 +3,21 @@ package org.ranapat.localization {
 	
 	internal class SupportedLanguage {
 		
+		private var _latestGetSuccess:Boolean;
+		
 		public var data:Object;
 		
 		public function SupportedLanguage(data:String) {
 			try { this.data = JSON.decode(data); } catch (e:Error) { /**/ }
 		}
 		
+		public function get latestGetSuccess():Boolean {
+			return this._latestGetSuccess;
+		}
+		
 		public function get(key:String, bundle:String = null):String {
+			this._latestGetSuccess = false;
+			
 			if (this.data) {
 				if (bundle) {
 					var items:Array = bundle.split(Settings.BUNDLE_DELIMITER);
@@ -21,12 +29,22 @@ package org.ranapat.localization {
 							tmp = tmp[items[i]];
 						}
 						
+						if (tmp[key]) {
+							this._latestGetSuccess = true;
+						}
+						
 						return tmp[key]? tmp[key] : ("!!" + bundle + "." + key + "!!");
 					} catch (e:Error) {
 						return "!!" + bundle + "." + key + "!!";
 					}
 				} else {
-					try { return this.data[key]? this.data[key] : ("!!" + key + "!!"); } catch (e:Error) { return "!!" + key + "!!"; }
+					try {
+						if (this.data[key]) {
+							this._latestGetSuccess = true;
+						}
+						
+						return this.data[key]? this.data[key] : ("!!" + key + "!!");
+					} catch (e:Error) { return "!!" + key + "!!"; }
 				}
 			} else {
 				return "!!" + key + "!!";

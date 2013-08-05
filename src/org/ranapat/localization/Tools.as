@@ -10,6 +10,14 @@ package org.ranapat.localization {
 				throw new Error(getQualifiedClassName(_class) + " Class can not be instantiated directly.");
 			}
 		}
+		
+		public static function getClassName(instance:Object):String {
+			return getQualifiedClassName(instance);
+		}
+		
+		public static function getClass(instance:Object):Class {
+			return getDefinitionByName(Tools.getClassName(instance)) as Class;
+		}
 	}
 
 }
