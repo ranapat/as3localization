@@ -11,47 +11,73 @@ package org.ranapat.localization {
 	[Event(name = "failed", type = "org.ranapat.localization.DataLoaderEvent")]
 	internal class DataLoader extends EventDispatcher {
 		private var _loader:URLLoader;
+		private var _embeddedLanguages:EmbeddedLanguages;
 		
 		public function DataLoader() {
-			this._loader = new URLLoader();
-			this._loader.dataFormat = URLLoaderDataFormat.TEXT;
+			//
 		}
 		
 		public function load(url:String):void {
+			this.initializeLoader();
 			this._loader.load(new URLRequest(url));
-			this.addEventListeners();
+		}
+		
+		public function embedded(language:String):void {
+			this.initializeEmbeddedLanguages();
+			this.dispatchEvent(new DataLoaderEvent(DataLoaderEvent.COMPLETE, this._embeddedLanguages.getJSONString(language)));
 		}
 		
 		public function destroy():void {
-			this.removeEventListeners();
+			this.removeLoader();
+			this.removeEmbeddedLanguages();
 		}
 		
-		private function addEventListeners():void {
+		private function initializeEmbeddedLanguages():void {
+			this.removeEmbeddedLanguages();
+			
+			this._embeddedLanguages = new EmbeddedLanguages();
+		}
+		
+		private function removeEmbeddedLanguages():void {
+			if (this._embeddedLanguages) {
+				this._embeddedLanguages = null;
+			}
+		}
+		
+		private function initializeLoader():void {
+			this.removeLoader();
+			
+			this._loader = new URLLoader();
+			this._loader.dataFormat = URLLoaderDataFormat.TEXT;
 			this._loader.addEventListener(Event.COMPLETE, this.handleLoaderComplete, false, 0, true);
 			this._loader.addEventListener(IOErrorEvent.IO_ERROR, this.handleLoaderIOError, false, 0, true);
 			this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.handleLoaderSecurityError, false, 0, true);
 		}
 		
-		private function removeEventListeners():void {
-			this._loader.removeEventListener(Event.COMPLETE, this.handleLoaderComplete);
-			this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.handleLoaderIOError);
-			this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.handleLoaderSecurityError);
+		private function removeLoader():void {
+			if (this._loader) {
+				this._loader.removeEventListener(Event.COMPLETE, this.handleLoaderComplete);
+				this._loader.removeEventListener(IOErrorEvent.IO_ERROR, this.handleLoaderIOError);
+				this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this.handleLoaderSecurityError);
+				this._loader.close();
+				this._loader = null;
+			}
 		}
 		
 		private function handleLoaderComplete(e:Event):void {
-			this.removeEventListeners();
+			this.removeLoader();
 			
 			this.dispatchEvent(new DataLoaderEvent(DataLoaderEvent.COMPLETE, String(e.target.data)));
 		}
 		
 		private function handleLoaderIOError(e:IOErrorEvent):void {
-			this.removeEventListeners();
+			this.removeLoader();
 			
 			this.dispatchEvent(new DataLoaderEvent(DataLoaderEvent.FAILED));
 		}
 		
 		private function handleLoaderSecurityError(e:SecurityErrorEvent):void {
-			this.removeEventListeners();
+			this.removeLoader();
 			
 			this.dispatchEvent(new DataLoaderEvent(DataLoaderEvent.FAILED));
 		}

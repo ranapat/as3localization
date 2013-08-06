@@ -6,6 +6,7 @@ package org.ranapat.localization.examples
 	import flash.text.TextField;
 	import org.ranapat.localization.LanguageChangedEvent;
 	import org.ranapat.localization.Localization;
+	import org.ranapat.localization.TT;
 	
 	/**
 	 * ...
@@ -21,7 +22,7 @@ package org.ranapat.localization.examples
 		public function Main():void 
 		{
 			Localization.instance.collectMode = true;
-			Localization.instance.language = "english";
+			
 			
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -38,6 +39,9 @@ package org.ranapat.localization.examples
 			Localization.instance.addEventListener(LanguageChangedEvent.SKIPPED, handleSkipped);
 			
 			
+			//Localization.instance.language = "english";
+			TT.language = "english";
+			trace("?????? " + TT.get("key1@bundle1@bundle2"))
 		}
 		
 		private function handleSkipped(e:LanguageChangedEvent):void 

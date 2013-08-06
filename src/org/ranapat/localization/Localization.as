@@ -52,10 +52,15 @@ package org.ranapat.localization {
 			
 			if (validated != this._language) {
 				this._language = validated;
-				this._dataLoader.load(Settings.PATH + validated + Settings.EXTENSION);
 				this._supportedLanguage = null;
 				
 				this.dispatchEvent(new LanguageChangedEvent(LanguageChangedEvent.REQUESTED, this.language));
+				
+				if (Settings.EMBED_MODE) {
+					this._dataLoader.embedded(validated);
+				} else {
+					this._dataLoader.load(Settings.PATH + validated + Settings.EXTENSION);
+				}
 			} else {
 				this.dispatchEvent(new LanguageChangedEvent(LanguageChangedEvent.SKIPPED, this.language));
 			}

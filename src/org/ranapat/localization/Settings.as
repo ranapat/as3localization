@@ -2,6 +2,7 @@ package org.ranapat.localization {
 	import flash.text.TextField;
 	
 	internal final class Settings {
+		public static const EMBED_MODE:Boolean = true;
 		
 		public static const PATH:String = "./";
 		public static const EXTENSION:String = ".json";
