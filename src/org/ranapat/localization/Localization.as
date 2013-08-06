@@ -109,6 +109,31 @@ package org.ranapat.localization {
 			return this.translate(parts.shift(), parts.join(Settings.BUNDLE_BUNDLE_DELIMITER), _default);
 		}
 		
+		public function string(hash:String, ...args):String {
+			trace("@@@@@@@@@@@@ " + args.length)
+			
+			var result:String = this.get(hash);
+			
+			var regexp:RegExp = /%([d|f|s])/;
+			while (regexp.test(result) && args.length > 0) {
+				var type:String = result.match(regexp)[1];
+				var value:String = args.shift();
+				
+				var properValue:*;
+				if (type == "s") {
+					properValue = value;
+				} else if (type == "d") {
+					properValue = int(value);
+				} else if (type == "f") {
+					properValue = Number(value).toString();
+				}
+				
+				result = result.replace(regexp, properValue);
+			}
+			
+			return result;
+		}
+		
 		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {
 			var length:uint = object.numChildren;
 			var tmp:DisplayObject;

@@ -12,5 +12,6 @@
 		"bundle2": {
 			"key1": "now we are here!"
 		}
-	}
+	},
+	"key1": "global key 1! My name is %s and my test string is %f"
 }

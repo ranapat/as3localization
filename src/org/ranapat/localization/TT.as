@@ -14,6 +14,11 @@ package org.ranapat.localization {
 			return Localization.instance.get(hash, _default);
 		}
 		
+		public static function string(hash:String, ...args):String {
+			args.splice(0, 0, hash);
+			return Localization.instance.string.apply(Localization.instance, args);
+		}
+		
 		public static function translateDisplayObjectContainer(object:DisplayObjectContainer):void {
 			Localization.instance.applyToDisplayObjectContainer(object);
 		}

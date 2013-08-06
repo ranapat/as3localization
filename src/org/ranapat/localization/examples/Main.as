@@ -22,10 +22,27 @@ package org.ranapat.localization.examples
 		public function Main():void 
 		{
 			Localization.instance.collectMode = true;
+			TT.language = "english";
 			
+			/*
+			var r:String = "My name is %s and I live in %f and now I think the time is %d";
+			var regexp:RegExp = /%([d|f|s])/
 			
+			while (regexp.test(r)) {
+				var type:String = r.match(regexp)[1];
+				r = r.replace(regexp, "__SHIT__");
+				trace("............... " + r + " .. " + type)
+			}
+			*/
+			
+			trace("+++++++ " + TT.string("key1", "Ivo", 123.3, "Another One"));
+			
+			/*
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
+			*/
+			
+			
 		}
 		
 		private function init(e:Event = null):void 
