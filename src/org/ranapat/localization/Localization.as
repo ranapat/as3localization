@@ -101,7 +101,7 @@ package org.ranapat.localization {
 		
 		public function get(hash:String, _default:String = null):String {
 			var parts:Array = hash.split(Settings.KEY_BUNDLE_DELIMITER);
-			return this.translate(parts.shift(), parts.join(Settings.KEY_BUNDLE_DELIMITER), _default);
+			return this.translate(parts.shift(), parts.join(Settings.BUNDLE_BUNDLE_DELIMITER), _default);
 		}
 		
 		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {

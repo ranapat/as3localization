@@ -56,7 +56,7 @@ package org.ranapat.localization.examples
 		{
 			trace(e.type + " .. " + e.language)
 			trace("try to get key1? " + Localization.instance.get("key1", "i"))
-			//trace("try to get key1? " + Localization.instance.get("key1", "bundle1"))
+			trace("try to get key1? " + Localization.instance.get("key1@bundle1@bundle2"))
 			//trace("try to get key1? " + Localization.instance.get("key1", "bundle2#bundle3"))
 			
 			addChild(new Sprite());

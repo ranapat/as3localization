@@ -6,5 +6,11 @@
 		"_justSomeTestTxt": "hohohoh",
 		"__TRANSLATE__justSomeTest": "hi again",
 		"_justSomeTestNotWorkingTxt": "we are also here!"
+	},
+	"bundle1": {
+		"key1": "we are this one here!!!",
+		"bundle2": {
+			"key1": "now we are here!"
+		}
 	}
 }
