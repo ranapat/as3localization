@@ -6,7 +6,8 @@ package org.ranapat.localization {
 		public static const PATH:String = "./";
 		public static const EXTENSION:String = ".json";
 		
-		public static const BUNDLE_DELIMITER:String = "#";
+		public static const BUNDLE_BUNDLE_DELIMITER:String = "#";
+		public static const KEY_BUNDLE_DELIMITER:String = "@";
 		
 		public static const MISSING_TRANSLATION_STRING:String = "!!MISSING!!";
 		

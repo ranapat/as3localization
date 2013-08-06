@@ -20,7 +20,7 @@ package org.ranapat.localization {
 			
 			if (this.data) {
 				if (bundle) {
-					var items:Array = bundle.split(Settings.BUNDLE_DELIMITER);
+					var items:Array = bundle.split(Settings.BUNDLE_BUNDLE_DELIMITER);
 					var tmp:Object = this.data;
 					
 					try {

@@ -81,20 +81,28 @@ package org.ranapat.localization {
 			return JSON.encode(this._collected);
 		}
 		
-		public function get(key:String, bundle:String = null):String {
-			var result:String = this._supportedLanguage? this._supportedLanguage.get(key, bundle) : ("??" + key + " .. " + this._supportedLanguage + "??");
+		public function translate(key:String, bundle:String = null, _default:String = null):String {
+			var missing:String = _default? _default : ("??" + key + "??");
+			var result:String = this._supportedLanguage? this._supportedLanguage.get(key, bundle) : missing;
+			result = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : missing;
 			if (this.collectMode) {
+				missing = _default? _default : Settings.MISSING_TRANSLATION_STRING;
 				if (bundle) {
 					if (!this._collected[bundle]) {
 						this._collected[bundle] = { };
 					}
-					this._collected[bundle][key] = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : Settings.MISSING_TRANSLATION_STRING;
+					this._collected[bundle][key] = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : missing;
 				} else {
-					this._collected[key] = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : Settings.MISSING_TRANSLATION_STRING;
+					this._collected[key] = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : missing;
 				}
 			}
 			return result;
-		}		
+		}
+		
+		public function get(hash:String, _default:String = null):String {
+			var parts:Array = hash.split(Settings.KEY_BUNDLE_DELIMITER);
+			return this.translate(parts.shift(), parts.join(Settings.KEY_BUNDLE_DELIMITER), _default);
+		}
 		
 		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {
 			var length:uint = object.numChildren;
@@ -136,7 +144,7 @@ package org.ranapat.localization {
 		private function translateDisplayObject(object:DisplayObject, container:DisplayObjectContainer):void {
 			if (object is TextField) {
 				var tmp:TextField = object as TextField;
-				tmp.text = this.get(tmp.name, Tools.getClassName(container));
+				tmp.text = this.translate(tmp.name, Tools.getClassName(container));
 			}
 		}
 		
