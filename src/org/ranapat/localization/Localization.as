@@ -2,7 +2,7 @@ package org.ranapat.localization {
 	import com.adobe.serialization.json.JSON;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
+	import flash.display.SimpleButton;
 	import flash.events.EventDispatcher;
 	import flash.text.TextField;
 	import flash.utils.Dictionary;
@@ -272,8 +272,36 @@ package org.ranapat.localization {
 		
 		private function translateDisplayObject(object:DisplayObject, container:DisplayObjectContainer):void {
 			if (object is TextField) {
-				var tmp:TextField = object as TextField;
-				tmp.text = this.translate(tmp.name, Tools.getClassName(container));
+				var tmpTextField:TextField = object as TextField;
+				tmpTextField.text = this.translate(tmpTextField.name, Tools.getClassName(container));
+			} else if (object is SimpleButton) {
+				var tmpSimpleButton:SimpleButton = object as SimpleButton;
+				
+				var stateContainer:DisplayObjectContainer
+				var length:uint;
+				var i:uint;
+				
+				stateContainer = tmpSimpleButton.upState as DisplayObjectContainer;
+				length = stateContainer.numChildren;
+				for (i = 0; i < length; ++i) {
+					if (stateContainer.getChildAt(i) is TextField) {
+						(stateContainer.getChildAt(i) as TextField).text = this.translate(tmpSimpleButton.name, Tools.getClassName(container))
+					}
+				}
+				stateContainer = tmpSimpleButton.downState as DisplayObjectContainer;
+				length = stateContainer.numChildren;
+				for (i = 0; i < length; ++i) {
+					if (stateContainer.getChildAt(i) is TextField) {
+						(stateContainer.getChildAt(i) as TextField).text = this.translate(tmpSimpleButton.name, Tools.getClassName(container))
+					}
+				}
+				stateContainer = tmpSimpleButton.overState as DisplayObjectContainer;
+				length = stateContainer.numChildren;
+				for (i = 0; i < length; ++i) {
+					if (stateContainer.getChildAt(i) is TextField) {
+						(stateContainer.getChildAt(i) as TextField).text = this.translate(tmpSimpleButton.name, Tools.getClassName(container))
+					}
+				}
 			}
 		}
 		

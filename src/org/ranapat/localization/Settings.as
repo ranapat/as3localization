@@ -1,4 +1,5 @@
 package org.ranapat.localization {
+	import flash.display.SimpleButton;
 	import flash.text.TextField;
 	
 	internal final class Settings {
@@ -13,10 +14,10 @@ package org.ranapat.localization {
 		public static const MISSING_TRANSLATION_STRING:String = "!!MISSING!!";
 		
 		public static const DISPLAY_OBJECT_TYPES_TO_TRANSLATE:Vector.<Class> = Vector.<Class>([
-			TextField
+			TextField, SimpleButton
 		]);
 		public static const DISPLAY_OBJECT_NAMES_TO_TRANSLATE:Vector.<RegExp> = Vector.<RegExp>([
-			/^_.*[t|T][x|X][t|T]$/, /^__TRANSLATE__.*$/
+			/^_.*[t|T][x|X][t|T]$/, /^__TRANSLATE__.*$/, /^_.*Btn$/
 		]);
 		
 		public static const SEARCH_NAMED_GROUP_PATTERNS:Vector.<RegExp> = Vector.<RegExp>([
