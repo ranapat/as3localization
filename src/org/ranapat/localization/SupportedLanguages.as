@@ -1,15 +1,20 @@
 package org.ranapat.localization {
 	
 	public class SupportedLanguages {
-		public static const ENGLISH:String = "english";
-		public static const GERMAN:String = "german";
-		public static const DEFAULT:String = SupportedLanguages.ENGLISH;
-		private static const LANGUAGES:Vector.<String> = Vector.<String>([
-			SupportedLanguages.ENGLISH, SupportedLanguages.GERMAN
-		]);
+		public function SupportedLanguages() {
+			Tools.ensureAbstractClass(this, SupportedLanguages);
+		}
 		
-		public static function validate(language:String):String {
-			return SupportedLanguages.LANGUAGES.indexOf(language) >= 0? language : SupportedLanguages.DEFAULT;
+		public function validate(language:String):String {
+			return this.supported.indexOf(language) >= 0? language : this.defaultLanguage;
+		}
+		
+		protected function get defaultLanguage():String {
+			return "";
+		}
+		
+		protected function get supported():Vector.<String> {
+			return new Vector.<String>();
 		}
 	}
 

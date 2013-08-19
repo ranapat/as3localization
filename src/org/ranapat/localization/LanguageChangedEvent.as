@@ -1,7 +1,7 @@
 package org.ranapat.localization {
 	import flash.events.Event;
 	
-	public class LanguageChangedEvent extends Event {
+	public final class LanguageChangedEvent extends Event {
 		public static const INITIALIZED:String = "initialized";
 		public static const REQUESTED:String = "requested";
 		public static const CHANGED:String = "changed";

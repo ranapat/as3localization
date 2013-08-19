@@ -5,36 +5,51 @@ package org.ranapat.localization {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.text.TextField;
+	import flash.utils.Dictionary;
 	
 	[Event(name = "initialized", type = "org.ranapat.localization.LanguageChangedEvent")]
 	[Event(name = "requested", type = "org.ranapat.localization.LanguageChangedEvent")]
 	[Event(name = "changed", type = "org.ranapat.localization.LanguageChangedEvent")]
 	[Event(name = "skipped", type = "org.ranapat.localization.LanguageChangedEvent")]
 	[Event(name = "failed", type = "org.ranapat.localization.LanguageChangedEvent")]
-	public class Localization extends EventDispatcher {
+	public final class Localization extends EventDispatcher {
 		private static var _allowInstance:Boolean;
 		private static var _instance:Localization;
 		
-		public static function get instance():Localization {
+		public static function construct(supportedLanguages:SupportedLanguages, factory:EmbeddedLanguageFactory):void {
 			if (!Localization._instance) {
 				Localization._allowInstance = true;
-				Localization._instance = new Localization();
+				Localization._instance = new Localization(supportedLanguages, factory);
 				Localization._allowInstance = false;
 			}
+		}
+		
+		public static function get instance():Localization {
 			return Localization._instance;
 		}
 		
 		private var _language:String;
 		private var _dataLoader:DataLoader;
+		private var _factory:EmbeddedLanguageFactory;
 		private var _supportedLanguage:SupportedLanguage;
+		private var _supportedLanguages:SupportedLanguages;
+		private var _languageEverSet:Boolean;
 		private var _collectMode:Boolean;
 		private var _collected:Object;
+		private var _autoTranslateDictionary:Dictionary;
 		
-		public function Localization() {
+		public function Localization(supportedLanguages:SupportedLanguages, factory:EmbeddedLanguageFactory) {
 			if (Localization._allowInstance) {
-				this._dataLoader = new DataLoader();
+				this._supportedLanguages = supportedLanguages;
+				this._factory = factory;
+				
+				this._dataLoader = new DataLoader(this._factory);
 				this._dataLoader.addEventListener(DataLoaderEvent.COMPLETE, this.handleDataLoaderComplete, false, 0, true);
 				this._dataLoader.addEventListener(DataLoaderEvent.FAILED, this.handleDataLoaderFailed, false, 0, true);
+				
+				this._autoTranslateDictionary = new Dictionary(true);
+				
+				this.addEventListener(LanguageChangedEvent.CHANGED, this.handleSelfChanged, false, 0, true);
 			} else {
 				throw new Error("Use Localization::instance getter instead");
 			}
@@ -45,10 +60,17 @@ package org.ranapat.localization {
 			this._dataLoader.removeEventListener(DataLoaderEvent.FAILED, this.handleDataLoaderFailed);
 			this._dataLoader.destroy();
 			this._dataLoader = null;
+			
+			this._factory = null;
+			this._supportedLanguage = null;
+			this._supportedLanguages = null;
+			
+			this.removeEventListener(LanguageChangedEvent.CHANGED, this.handleSelfChanged);
+			this._autoTranslateDictionary = null;
 		}
 		
 		public function set language(value:String):void {
-			var validated:String = SupportedLanguages.validate(value);
+			var validated:String = this._supportedLanguages.validate(value);
 			
 			if (validated != this._language) {
 				this._language = validated;
@@ -109,9 +131,7 @@ package org.ranapat.localization {
 			return this.translate(parts.shift(), parts.join(Settings.BUNDLE_BUNDLE_DELIMITER), _default);
 		}
 		
-		public function string(hash:String, ...args):String {
-			trace("@@@@@@@@@@@@ " + args.length)
-			
+		public function spritf(hash:String, ...args):String {
 			var result:String = this.get(hash);
 			
 			var regexp:RegExp = /%([d|f|s])/;
@@ -134,6 +154,81 @@ package org.ranapat.localization {
 			return result;
 		}
 		
+		public function string(hash:String, replacements:* = null):String {
+			var result:String = this.get(hash);
+			var replacementsString:String = ["number", "string"].indexOf(typeof(replacements)) >= 0? replacements : null;
+			var replacementsObject:Object = replacementsString? null : replacements;
+			
+			if (replacementsString || replacementsObject) {
+				var doBreak:Boolean;
+				var regexp:RegExp;
+				var index:uint;
+				var replace:String;
+				var results:Array;
+				var searchGroups:Vector.<RegExp> = Settings.SEARCH_NAMED_GROUP_PATTERNS;
+				var indexGroups:Vector.<uint> = Settings.SEARCH_NAMED_GROUP_INDEXES;
+				var replaceGroups:Vector.<String> = Settings.REPLACE_NAMED_GROUP_PATTERNS;
+				var length:uint = searchGroups.length;
+				for (var i:uint = 0; i < length && !doBreak; ++i) {
+					regexp = searchGroups[i];
+					index = indexGroups[i];
+					replace = replaceGroups[i];
+					
+					while ((results = result.match(regexp)) != null) {
+						if (results.length > index) {
+							if (replacementsString) {
+								result = result.replace(regexp, replace.replace("($0)", replacementsString));
+								
+								doBreak = true;
+								break;
+							} else {
+								var found:Boolean = false;
+								for (var key:Object in replacementsObject) {
+									if (results[index] == key) {
+										result = result.replace(regexp, replace.replace("($0)", replacementsObject[key]));
+										
+										found = true;
+										break;
+									}
+								}
+								
+								if (!found) {
+									result = result.replace(regexp, replace.replace("($0)", "$" + index));
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			return result;
+		}
+		
+		public function supply(hash:String, bundle:* = null, replacements:* = null):String {
+			if (bundle) {
+				if (bundle is String) {
+					hash += Settings.KEY_BUNDLE_DELIMITER + bundle;
+				} else {
+					hash += Settings.KEY_BUNDLE_DELIMITER + Tools.getClassName(bundle);
+				}
+			}
+			
+			return this.string(hash, replacements);
+		}
+		
+		public function apply(target:DisplayObject, replacements:* = null):void {
+			if (target) {
+				var name:String = target.name;
+				if (target.parent) {
+					name += Settings.KEY_BUNDLE_DELIMITER + Tools.getClassName(target.parent);
+				}
+				
+				if (target is TextField) {
+					(target as TextField).text = this.string(name, replacements);
+				}
+			}
+		}
+		
 		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {
 			var length:uint = object.numChildren;
 			var tmp:DisplayObject;
@@ -144,6 +239,10 @@ package org.ranapat.localization {
 					this.translateDisplayObject(tmp, object);
 				}
 			}
+		}
+		
+		public function autoApplyToDisplayObjectContainer(object:DisplayObjectContainer, callback:Function = null):void {
+			this._autoTranslateDictionary[object] = callback != null? callback : 1;
 		}
 		
 		private function checkDisplayObjectForApplyTranslation(tmp:DisplayObject):Boolean {
@@ -179,9 +278,10 @@ package org.ranapat.localization {
 		}
 		
 		private function handleDataLoaderComplete(e:DataLoaderEvent):void {
-			var isChanged:Boolean = this._supportedLanguage != null;
+			var isChanged:Boolean = this._languageEverSet;
 			
 			this._supportedLanguage = new SupportedLanguage(e.result);
+			this._languageEverSet = true;
 			
 			if (isChanged) {
 				this.dispatchEvent(new LanguageChangedEvent(LanguageChangedEvent.CHANGED, this.language));
@@ -192,6 +292,17 @@ package org.ranapat.localization {
 		
 		private function handleDataLoaderFailed(e:DataLoaderEvent):void {
 			this.dispatchEvent(new LanguageChangedEvent(LanguageChangedEvent.FAILED, this.language));
+		}
+		
+		private function handleSelfChanged(e:LanguageChangedEvent):void {
+			for (var i:Object in this._autoTranslateDictionary) {
+				try {
+					this.applyToDisplayObjectContainer(i as DisplayObjectContainer);
+					if (this._autoTranslateDictionary[i] is Function) {
+						(this._autoTranslateDictionary[i] as Function).apply();
+					}
+				} catch (e:Error) { /**/ }
+			}
 		}
 	}
 

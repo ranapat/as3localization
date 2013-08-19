@@ -12,9 +12,10 @@ package org.ranapat.localization {
 	internal class DataLoader extends EventDispatcher {
 		private var _loader:URLLoader;
 		private var _embeddedLanguages:EmbeddedLanguages;
+		private var _factory:EmbeddedLanguageFactory;
 		
-		public function DataLoader() {
-			//
+		public function DataLoader(factory:EmbeddedLanguageFactory) {
+			this._factory = factory;
 		}
 		
 		public function load(url:String):void {
@@ -30,12 +31,14 @@ package org.ranapat.localization {
 		public function destroy():void {
 			this.removeLoader();
 			this.removeEmbeddedLanguages();
+			
+			this._factory = null;
 		}
 		
 		private function initializeEmbeddedLanguages():void {
 			this.removeEmbeddedLanguages();
 			
-			this._embeddedLanguages = new EmbeddedLanguages();
+			this._embeddedLanguages = new EmbeddedLanguages(this._factory);
 		}
 		
 		private function removeEmbeddedLanguages():void {

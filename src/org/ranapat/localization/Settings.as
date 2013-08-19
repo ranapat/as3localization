@@ -19,6 +19,15 @@ package org.ranapat.localization {
 			/^_.*[t|T][x|X][t|T]$/, /^__TRANSLATE__.*$/
 		]);
 		
+		public static const SEARCH_NAMED_GROUP_PATTERNS:Vector.<RegExp> = Vector.<RegExp>([
+			/(.*)\|([a-zA-Z]+)\|(.*)$/
+		]);
+		public static const SEARCH_NAMED_GROUP_INDEXES:Vector.<uint> = Vector.<uint>([
+			2
+		]);
+		public static const REPLACE_NAMED_GROUP_PATTERNS:Vector.<String> = Vector.<String>([
+			"$1($0)$3"
+		]);
 	}
 
 }

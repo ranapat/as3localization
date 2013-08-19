@@ -4,6 +4,8 @@ package org.ranapat.localization.examples
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextField;
+	import org.ranapat.localization.embedded.LanguageFactory;
+	import org.ranapat.localization.embedded.Languages;
 	import org.ranapat.localization.LanguageChangedEvent;
 	import org.ranapat.localization.Localization;
 	import org.ranapat.localization.TT;
@@ -21,6 +23,8 @@ package org.ranapat.localization.examples
 		
 		public function Main():void 
 		{
+			Localization.construct(new Languages(), new LanguageFactory());
+			
 			Localization.instance.collectMode = true;
 			TT.language = "english";
 			
@@ -35,7 +39,7 @@ package org.ranapat.localization.examples
 			}
 			*/
 			
-			trace("+++++++ " + TT.string("key1", "Ivo", 123.3, "Another One"));
+			trace("+++++++ " + TT.spritf("key1", "Ivo", 123.3, "Another One"));
 			
 			/*
 			if (stage) init();
