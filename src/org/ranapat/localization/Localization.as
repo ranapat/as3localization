@@ -108,6 +108,18 @@ package org.ranapat.localization {
 			return JSON.encode(this._collected);
 		}
 		
+		public function hash(hash:String, bundle:* = null):String {
+			if (bundle) {
+				if (bundle is String) {
+					return hash + Settings.KEY_BUNDLE_DELIMITER + bundle;
+				} else {
+					return hash + Settings.KEY_BUNDLE_DELIMITER + Tools.getClassName(bundle);
+				}
+			} else {
+				return hash;
+			}
+		}
+		
 		public function translate(key:String, bundle:String = null, _default:String = null):String {
 			var missing:String = _default? _default : ("??" + key + "??");
 			var result:String = this._supportedLanguage? this._supportedLanguage.get(key, bundle) : missing;
@@ -205,15 +217,7 @@ package org.ranapat.localization {
 		}
 		
 		public function supply(hash:String, bundle:* = null, replacements:* = null):String {
-			if (bundle) {
-				if (bundle is String) {
-					hash += Settings.KEY_BUNDLE_DELIMITER + bundle;
-				} else {
-					hash += Settings.KEY_BUNDLE_DELIMITER + Tools.getClassName(bundle);
-				}
-			}
-			
-			return this.string(hash, replacements);
+			return this.string(this.hash(hash, bundle), replacements);
 		}
 		
 		public function apply(target:DisplayObject, replacements:* = null):void {

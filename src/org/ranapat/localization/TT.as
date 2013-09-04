@@ -18,6 +18,10 @@ package org.ranapat.localization {
 			return Localization.instance? Localization.instance.language : "";
 		}
 		
+		public static function hash(hash:String, bundle:* = null):String {
+			return Localization.instance? Localization.instance.hash(hash, bundle) : "";
+		}
+		
 		public static function get(hash:String, _default:String = null):String {
 			return Localization.instance? Localization.instance.get(hash, _default) : "";
 		}
