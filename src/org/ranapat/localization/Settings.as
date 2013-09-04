@@ -11,6 +11,8 @@ package org.ranapat.localization {
 		public static const BUNDLE_BUNDLE_DELIMITER:String = "#";
 		public static const KEY_BUNDLE_DELIMITER:String = "@";
 		
+		public static const SUPER_BUNDLE_KEY_NAME:String = "__super";
+		
 		public static const MISSING_TRANSLATION_STRING:String = "!!MISSING!!";
 		
 		public static const DISPLAY_OBJECT_TYPES_TO_TRANSLATE:Vector.<Class> = Vector.<Class>([

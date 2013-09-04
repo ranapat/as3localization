@@ -33,7 +33,11 @@ package org.ranapat.localization {
 							this._latestGetSuccess = true;
 						}
 						
-						return tmp[key]? tmp[key] : ("!!" + bundle + "." + key + "!!");
+						if (!tmp[key] && tmp[Settings.SUPER_BUNDLE_KEY_NAME]) {
+							return this.get(key, tmp[Settings.SUPER_BUNDLE_KEY_NAME]);
+						} else {
+							return tmp[key]? tmp[key] : ("!!" + bundle + "." + key + "!!");
+						}
 					} catch (e:Error) {
 						return "!!" + bundle + "." + key + "!!";
 					}
