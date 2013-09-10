@@ -229,6 +229,34 @@ package org.ranapat.localization {
 				
 				if (target is TextField) {
 					(target as TextField).text = this.string(name, replacements);
+				} else if (target is SimpleButton) {
+					var tmpSimpleButton:SimpleButton = target as SimpleButton;
+				
+					var stateContainer:DisplayObjectContainer
+					var length:uint;
+					var i:uint;
+					
+					stateContainer = tmpSimpleButton.upState as DisplayObjectContainer;
+					length = stateContainer.numChildren;
+					for (i = 0; i < length; ++i) {
+						if (stateContainer.getChildAt(i) is TextField) {
+							(stateContainer.getChildAt(i) as TextField).text = this.string(name, replacements);
+						}
+					}
+					stateContainer = tmpSimpleButton.downState as DisplayObjectContainer;
+					length = stateContainer.numChildren;
+					for (i = 0; i < length; ++i) {
+						if (stateContainer.getChildAt(i) is TextField) {
+							(stateContainer.getChildAt(i) as TextField).text = this.string(name, replacements);
+						}
+					}
+					stateContainer = tmpSimpleButton.overState as DisplayObjectContainer;
+					length = stateContainer.numChildren;
+					for (i = 0; i < length; ++i) {
+						if (stateContainer.getChildAt(i) is TextField) {
+							(stateContainer.getChildAt(i) as TextField).text = this.string(name, replacements);
+						}
+					}
 				}
 			}
 		}
