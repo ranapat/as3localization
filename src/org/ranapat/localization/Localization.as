@@ -227,37 +227,7 @@ package org.ranapat.localization {
 					name += Settings.KEY_BUNDLE_DELIMITER + Tools.getClassName(target.parent);
 				}
 				
-				if (target is TextField) {
-					(target as TextField).text = this.string(name, replacements);
-				} else if (target is SimpleButton) {
-					var tmpSimpleButton:SimpleButton = target as SimpleButton;
-				
-					var stateContainer:DisplayObjectContainer
-					var length:uint;
-					var i:uint;
-					
-					stateContainer = tmpSimpleButton.upState as DisplayObjectContainer;
-					length = stateContainer.numChildren;
-					for (i = 0; i < length; ++i) {
-						if (stateContainer.getChildAt(i) is TextField) {
-							(stateContainer.getChildAt(i) as TextField).text = this.string(name, replacements);
-						}
-					}
-					stateContainer = tmpSimpleButton.downState as DisplayObjectContainer;
-					length = stateContainer.numChildren;
-					for (i = 0; i < length; ++i) {
-						if (stateContainer.getChildAt(i) is TextField) {
-							(stateContainer.getChildAt(i) as TextField).text = this.string(name, replacements);
-						}
-					}
-					stateContainer = tmpSimpleButton.overState as DisplayObjectContainer;
-					length = stateContainer.numChildren;
-					for (i = 0; i < length; ++i) {
-						if (stateContainer.getChildAt(i) is TextField) {
-							(stateContainer.getChildAt(i) as TextField).text = this.string(name, replacements);
-						}
-					}
-				}
+				this.fillDisplayObject(target, this.string(name, replacements));
 			}
 		}
 		
@@ -268,7 +238,7 @@ package org.ranapat.localization {
 				tmp = object.getChildAt(i);
 				
 				if (this.checkDisplayObjectForApplyTranslation(tmp)) {
-					this.translateDisplayObject(tmp, object);
+					this.fillDisplayObject(tmp, this.translate(tmp.name, Tools.getClassName(object)));
 				}
 			}
 		}
@@ -302,10 +272,10 @@ package org.ranapat.localization {
 			return false;
 		}
 		
-		private function translateDisplayObject(object:DisplayObject, container:DisplayObjectContainer):void {
+		private function fillDisplayObject(object:DisplayObject, text:String):void {
 			if (object is TextField) {
 				var tmpTextField:TextField = object as TextField;
-				tmpTextField.text = this.translate(tmpTextField.name, Tools.getClassName(container));
+				tmpTextField.text = text;
 			} else if (object is SimpleButton) {
 				var tmpSimpleButton:SimpleButton = object as SimpleButton;
 				
@@ -317,21 +287,21 @@ package org.ranapat.localization {
 				length = stateContainer.numChildren;
 				for (i = 0; i < length; ++i) {
 					if (stateContainer.getChildAt(i) is TextField) {
-						(stateContainer.getChildAt(i) as TextField).text = this.translate(tmpSimpleButton.name, Tools.getClassName(container))
+						(stateContainer.getChildAt(i) as TextField).text = text;
 					}
 				}
 				stateContainer = tmpSimpleButton.downState as DisplayObjectContainer;
 				length = stateContainer.numChildren;
 				for (i = 0; i < length; ++i) {
 					if (stateContainer.getChildAt(i) is TextField) {
-						(stateContainer.getChildAt(i) as TextField).text = this.translate(tmpSimpleButton.name, Tools.getClassName(container))
+						(stateContainer.getChildAt(i) as TextField).text = text;
 					}
 				}
 				stateContainer = tmpSimpleButton.overState as DisplayObjectContainer;
 				length = stateContainer.numChildren;
 				for (i = 0; i < length; ++i) {
 					if (stateContainer.getChildAt(i) is TextField) {
-						(stateContainer.getChildAt(i) as TextField).text = this.translate(tmpSimpleButton.name, Tools.getClassName(container))
+						(stateContainer.getChildAt(i) as TextField).text = text;
 					}
 				}
 			}
