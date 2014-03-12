@@ -29,7 +29,7 @@ package org.ranapat.localization.examples
 			bbb.text = "1111";
 			bbb.name = "_justSomeTestNotWorkingTxt"
 			bbb.width = 500;
-			bbb.y = 200;
+			bbb.y = 400;
 			addChild(bbb);
 			
 			Localization.instance.applyToDisplayObjectContainer(this);

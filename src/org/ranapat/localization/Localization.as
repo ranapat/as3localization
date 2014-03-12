@@ -4,7 +4,9 @@ package org.ranapat.localization {
 	import flash.display.DisplayObjectContainer;
 	import flash.display.SimpleButton;
 	import flash.events.EventDispatcher;
+	import flash.text.AntiAliasType;
 	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
 	
 	[Event(name = "initialized", type = "org.ranapat.localization.LanguageChangedEvent")]
@@ -37,6 +39,9 @@ package org.ranapat.localization {
 		private var _collectMode:Boolean;
 		private var _collected:Object;
 		private var _autoTranslateDictionary:Dictionary;
+		private var _supportedCharactersRegExp:RegExp;
+		private var _defaultFontKeeperDictionary:Dictionary;
+		private var _triggers:Triggers;
 		
 		public function Localization(supportedLanguages:SupportedLanguages, factory:EmbeddedLanguageFactory) {
 			if (Localization._allowInstance) {
@@ -48,6 +53,9 @@ package org.ranapat.localization {
 				this._dataLoader.addEventListener(DataLoaderEvent.FAILED, this.handleDataLoaderFailed, false, 0, true);
 				
 				this._autoTranslateDictionary = new Dictionary(true);
+				this._defaultFontKeeperDictionary = new Dictionary(true);
+				
+				this._triggers = new Triggers();
 				
 				this.addEventListener(LanguageChangedEvent.CHANGED, this.handleSelfChanged, false, 0, true);
 			} else {
@@ -106,6 +114,22 @@ package org.ranapat.localization {
 		
 		public function get collected():String {
 			return JSON.encode(this._collected);
+		}
+		
+		public function set supportedCharactersRegExp(value:RegExp):void {
+			this._supportedCharactersRegExp = value;
+		}
+		
+		public function get supportedCharactersRegExp():RegExp {
+			return this._supportedCharactersRegExp;
+		}
+		
+		public function set triggers(value:Triggers):void {
+			this._triggers = value;
+		}
+		
+		public function get triggers():Triggers {
+			return this._triggers;
 		}
 		
 		public function hash(hash:String, bundle:* = null):String {
@@ -231,6 +255,10 @@ package org.ranapat.localization {
 			}
 		}
 		
+		public function applyToDisplayObject(target:DisplayObject, text:String):void {
+			this.fillDisplayObject(target, text);
+		}
+		
 		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {
 			var length:uint = object.numChildren;
 			var tmp:DisplayObject;
@@ -245,6 +273,49 @@ package org.ranapat.localization {
 		
 		public function autoApplyToDisplayObjectContainer(object:DisplayObjectContainer, callback:Function = null):void {
 			this._autoTranslateDictionary[object] = callback != null? callback : 1;
+		}
+		
+		public function fitTextWithinTextField(object:TextField):void {
+			var textFormat:TextFormat = object.getTextFormat();
+			var size:Number = Number(textFormat.size? textFormat.size : 12);
+			var initialTextHeight:Number = object.textHeight;
+			while (object.textWidth > object.width || object.textHeight > object.height) {
+			
+				--size;
+				textFormat.size = size;
+				object.setTextFormat(textFormat);
+			}
+			
+			object.y += (initialTextHeight - object.textHeight) / 2;
+		}
+		
+		public function charactersSupported(string:String):Boolean {
+			return this._supportedCharactersRegExp? this._supportedCharactersRegExp.test(string) : true;
+		}
+		
+		public function adjustTextFieldFont(object:TextField, replacementFont:String = "Arial", defaultFont:String = null):void {
+			var textFormat:TextFormat;
+			
+			if (!this.charactersSupported(object.text)) {
+				textFormat = object.getTextFormat();
+				this._defaultFontKeeperDictionary[object] = textFormat.font;
+				textFormat.font = replacementFont;
+				
+				object.embedFonts = false;
+				object.setTextFormat(textFormat);
+				object.antiAliasType = AntiAliasType.ADVANCED;
+			} else {
+				defaultFont = defaultFont? defaultFont : this._defaultFontKeeperDictionary[object];
+				
+				if (defaultFont) {
+					textFormat = object.getTextFormat();
+					textFormat.font = defaultFont;
+					
+					object.embedFonts = true;
+					object.setTextFormat(textFormat);
+					object.antiAliasType = AntiAliasType.ADVANCED;
+				}
+			}
 		}
 		
 		private function checkDisplayObjectForApplyTranslation(tmp:DisplayObject):Boolean {
@@ -276,6 +347,8 @@ package org.ranapat.localization {
 			if (object is TextField) {
 				var tmpTextField:TextField = object as TextField;
 				tmpTextField.text = text;
+				
+				this.processTriggers(tmpTextField);
 			} else if (object is SimpleButton) {
 				var tmpSimpleButton:SimpleButton = object as SimpleButton;
 				
@@ -288,6 +361,7 @@ package org.ranapat.localization {
 				for (i = 0; i < length; ++i) {
 					if (stateContainer.getChildAt(i) is TextField) {
 						(stateContainer.getChildAt(i) as TextField).text = text;
+						this.processTriggers(stateContainer.getChildAt(i));
 					}
 				}
 				stateContainer = tmpSimpleButton.downState as DisplayObjectContainer;
@@ -295,6 +369,7 @@ package org.ranapat.localization {
 				for (i = 0; i < length; ++i) {
 					if (stateContainer.getChildAt(i) is TextField) {
 						(stateContainer.getChildAt(i) as TextField).text = text;
+						this.processTriggers(stateContainer.getChildAt(i));
 					}
 				}
 				stateContainer = tmpSimpleButton.overState as DisplayObjectContainer;
@@ -302,8 +377,18 @@ package org.ranapat.localization {
 				for (i = 0; i < length; ++i) {
 					if (stateContainer.getChildAt(i) is TextField) {
 						(stateContainer.getChildAt(i) as TextField).text = text;
+						this.processTriggers(stateContainer.getChildAt(i));
 					}
 				}
+			}
+		}
+		
+		private function processTriggers(object:DisplayObject):void {
+			if (triggers.adjustTextFieldFont && object is TextField) {
+				this.adjustTextFieldFont(object as TextField, this.triggers.replacementFont);
+			}
+			if (this.triggers.fitTextWithinTextField && object is TextField) {
+				this.fitTextWithinTextField(object as TextField);
 			}
 		}
 		

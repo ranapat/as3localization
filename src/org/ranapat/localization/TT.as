@@ -1,6 +1,7 @@
 package org.ranapat.localization {
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.text.TextField;
 	
 	public final class TT {
 		public static function initialize(supportedLanguages:SupportedLanguages, factory:EmbeddedLanguageFactory, language:String = null):void {
@@ -16,6 +17,16 @@ package org.ranapat.localization {
 		
 		public static function get language():String {
 			return Localization.instance? Localization.instance.language : "";
+		}
+		
+		public static function get supportedCharactersRegExp():RegExp {
+			return Localization.instance? Localization.instance.supportedCharactersRegExp : null;
+		}
+		
+		public static function set supportedCharactersRegExp(value:RegExp):void {
+			if (Localization.instance) {
+				Localization.instance.supportedCharactersRegExp = value;
+			}
 		}
 		
 		public static function hash(hash:String, bundle:* = null):String {
@@ -45,6 +56,12 @@ package org.ranapat.localization {
 			return Localization.instance? Localization.instance.supply(hash, bundle, replacements) : "";
 		}
 		
+		public static function applyToDisplayObject(object:DisplayObject, text:String):void {
+			if (Localization.instance) {
+				Localization.instance.applyToDisplayObject(object, text);
+			}
+		}
+		
 		public static function translateDisplayObjectContainer(object:DisplayObjectContainer):void {
 			if (Localization.instance) {
 				Localization.instance.applyToDisplayObjectContainer(object);
@@ -54,6 +71,22 @@ package org.ranapat.localization {
 		public static function autoTranslateDisplayObjectContainer(object:DisplayObjectContainer, callback:Function = null):void {
 			if (Localization.instance) {
 				Localization.instance.autoApplyToDisplayObjectContainer(object, callback);
+			}
+		}
+		
+		public static function fitTextWithinTextField(object:TextField):void {
+			if (Localization.instance) {
+				Localization.instance.fitTextWithinTextField(object);
+			}
+		}
+		
+		public static function charactersSupported(string:String):Boolean {
+			return Localization.instance? Localization.instance.charactersSupported(string) : false;
+		}
+		
+		public static function adjustTextFieldFont(object:TextField, replacementFont:String = "Arial", defaultFont:String = null):void {
+			if (Localization.instance) {
+				Localization.instance.adjustTextFieldFont(object, replacementFont, defaultFont);
 			}
 		}
 	}

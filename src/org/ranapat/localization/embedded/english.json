@@ -1,4 +1,18 @@
 {
 	"welcome.trace.message": "Welcome to Localization trace log!",
-	"key1": "This is key1 %s %f %s"
+	"org.ranapat.localization.examples::ExampleClass": {
+		"_justSomeTestNotWorkingTxt": "This is something that works"
+	},
+	"org.ranapat.localization.examples::Main": {
+		"_justSomeTestTxt": "hohohoh Имало едно време три малки прасенца 1hohohoh Имало едно време три малки прасенца 1",
+		"__TRANSLATE__justSomeTest": "hi again",
+		"_justSomeTestNotWorkingTxt": "we are also here!"
+	},
+	"bundle1": {
+		"key1": "we are this one here!!!",
+		"bundle2": {
+			"key1": "now we are here!"
+		}
+	},
+	"key1": "global key 1! My name is %s and my test string is %f"
 }

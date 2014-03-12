@@ -4,6 +4,7 @@ package org.ranapat.localization.examples
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import org.ranapat.localization.embedded.LanguageFactory;
 	import org.ranapat.localization.embedded.Languages;
 	import org.ranapat.localization.LanguageChangedEvent;
@@ -26,7 +27,7 @@ package org.ranapat.localization.examples
 			Localization.construct(new Languages(), new LanguageFactory());
 			
 			Localization.instance.collectMode = true;
-			TT.language = "english";
+			//TT.language = "english";
 			
 			/*
 			var r:String = "My name is %s and I live in %f and now I think the time is %d";
@@ -41,12 +42,37 @@ package org.ranapat.localization.examples
 			
 			trace("+++++++ " + TT.spritf("key1", "Ivo", 123.3, "Another One"));
 			
-			/*
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
+			
+			/*
+			var textField1:TextField = new TextField();
+			textField1.text = "имало едно време три";
+			textField1.width = 200;
+			textField1.height = 200;
+			var textFormat1:TextFormat = textField1.getTextFormat();
+			textFormat1.size = 65;
+			textFormat1.color = 0xff00ff;
+			textField1.setTextFormat(textFormat1);
+			addChild(textField1);
+			
+			
+			var textField:TextField = new TextField();
+			textField.text = "имало едно време три"
+			textField.width = 200;
+			textField.height = 200;
+			var textFormat:TextFormat = textField.getTextFormat();
+			textFormat.size = 65;
+			textFormat.color = 0x00ff00;
+			textField.setTextFormat(textFormat);
+			addChild(textField);
+			
+			TT.supportedCharactersRegExp = /^[èéóöñíışáäàçğüÈÉÓÖÑÍİŞÁÄÀÇĞÜa-zA-Z0-9\s\+\-\\\[\]\(\)\{\}\|\/\!¡<>@#\$%\^&\=\*\?\.,`~_"':;]*$/g;
+			trace(TT.charactersSupported(textField.text))
+			
+			TT.adjustTextFieldFont(textField, "Verdana");
+			TT.fitTextWithinTextField(textField);
 			*/
-			
-			
 		}
 		
 		private function init(e:Event = null):void 
@@ -58,7 +84,6 @@ package org.ranapat.localization.examples
 			Localization.instance.addEventListener(LanguageChangedEvent.INITIALIZED, handleInitialized);
 			Localization.instance.addEventListener(LanguageChangedEvent.REQUESTED, handleRequested);
 			Localization.instance.addEventListener(LanguageChangedEvent.SKIPPED, handleSkipped);
-			
 			
 			//Localization.instance.language = "english";
 			TT.language = "english";
@@ -105,6 +130,11 @@ package org.ranapat.localization.examples
 			addChild(bbb);
 			
 			addChild(new ExampleClass());
+			
+			Localization.instance.supportedCharactersRegExp = /a-zа-яА-Я/gi;
+			Localization.instance.triggers.adjustTextFieldFont = true;
+			Localization.instance.triggers.fitTextWithinTextField = true;
+			Localization.instance.triggers.replacementFont = "Verdana";
 			
 			Localization.instance.applyToDisplayObjectContainer(this);
 			trace(Localization.instance.collected)
