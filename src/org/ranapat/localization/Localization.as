@@ -290,7 +290,12 @@ package org.ranapat.localization {
 		}
 		
 		public function charactersSupported(string:String):Boolean {
-			return this._supportedCharactersRegExp? this._supportedCharactersRegExp.test(string) : true;
+			if (this._supportedCharactersRegExp) {
+				this._supportedCharactersRegExp.lastIndex = 0;
+				return this._supportedCharactersRegExp.test(string);
+			} else {
+				return true;
+			}
 		}
 		
 		public function adjustTextFieldFont(object:TextField, replacementFont:String = "Arial", defaultFont:String = null):void {
