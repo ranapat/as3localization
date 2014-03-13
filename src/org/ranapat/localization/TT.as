@@ -29,6 +29,16 @@ package org.ranapat.localization {
 			}
 		}
 		
+		public static function get triggers():Triggers {
+			return Localization.instance? Localization.instance.triggers : null;
+		}
+		
+		public static function set triggers(value:Triggers):void {
+			if (Localization.instance) {
+				Localization.instance.triggers = value;
+			}
+		}
+		
 		public static function hash(hash:String, bundle:* = null):String {
 			return Localization.instance? Localization.instance.hash(hash, bundle) : "";
 		}
