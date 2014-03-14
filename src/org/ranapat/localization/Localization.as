@@ -401,11 +401,15 @@ package org.ranapat.localization {
 		}
 		
 		private function processTriggers(object:DisplayObject):void {
-			if (triggers.adjustTextFieldFont && object is TextField) {
-				this.adjustTextFieldFont(object as TextField, this.triggers.replacementFont);
-			}
-			if (this.triggers.fitTextWithinTextField && object is TextField) {
-				this.fitTextWithinTextField(object as TextField);
+			if (object is TextField) {
+				var textField:TextField = object as TextField;
+				
+				if (triggers.adjustTextFieldFont) {
+					this.adjustTextFieldFont(textField, this.triggers.replacementFont);
+				}
+				if (this.triggers.fitTextWithinTextField) {
+					this.fitTextWithinTextField(textField);
+				}
 			}
 		}
 		
