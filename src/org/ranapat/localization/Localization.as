@@ -308,8 +308,6 @@ package org.ranapat.localization {
 		public function adjustTextFieldFont(object:TextField, replacementFont:String = "Arial", defaultFont:String = null):void {
 			var textFormat:TextFormat;
 			
-			trace("we are here... " + object.text)
-			
 			if (!this.charactersSupported(object.text)) {
 				textFormat = object.getTextFormat();
 				this._defaultFontKeeperDictionary[object] = textFormat.font;
