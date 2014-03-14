@@ -78,6 +78,11 @@ package org.ranapat.localization {
 			
 			this.removeEventListener(LanguageChangedEvent.CHANGED, this.handleSelfChanged);
 			this._autoTranslateDictionary = null;
+			
+			this._defaultFontKeeperDictionary = null;
+			this._supportedCharactersRegExp = null;
+			this._triggers = null;
+			this._initialFitTextProperties = null;
 		}
 		
 		public function set language(value:String):void {
