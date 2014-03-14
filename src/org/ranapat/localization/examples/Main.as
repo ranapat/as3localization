@@ -42,10 +42,12 @@ package org.ranapat.localization.examples
 			
 			trace("+++++++ " + TT.spritf("key1", "Ivo", 123.3, "Another One"));
 			
+			/*
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
+			*/
 			
-			/*
+			/**/
 			var textField1:TextField = new TextField();
 			textField1.text = "имало едно време три";
 			textField1.width = 200;
@@ -72,7 +74,7 @@ package org.ranapat.localization.examples
 			
 			TT.adjustTextFieldFont(textField, "Verdana");
 			TT.fitTextWithinTextField(textField);
-			*/
+			/**/
 		}
 		
 		private function init(e:Event = null):void 

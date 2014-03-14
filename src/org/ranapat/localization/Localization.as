@@ -42,6 +42,7 @@ package org.ranapat.localization {
 		private var _supportedCharactersRegExp:RegExp;
 		private var _defaultFontKeeperDictionary:Dictionary;
 		private var _triggers:Triggers;
+		private var _initialFitTextProperties:Dictionary;
 		
 		public function Localization(supportedLanguages:SupportedLanguages, factory:EmbeddedLanguageFactory) {
 			if (Localization._allowInstance) {
@@ -56,6 +57,8 @@ package org.ranapat.localization {
 				this._defaultFontKeeperDictionary = new Dictionary(true);
 				
 				this._triggers = new Triggers();
+				
+				this._initialFitTextProperties = new Dictionary(true);
 				
 				this.addEventListener(LanguageChangedEvent.CHANGED, this.handleSelfChanged, false, 0, true);
 			} else {
@@ -276,17 +279,21 @@ package org.ranapat.localization {
 		}
 		
 		public function fitTextWithinTextField(object:TextField):void {
+			if (!this._initialFitTextProperties[object]) {
+				this._initialFitTextProperties[object] = new TextFieldProperties(object.y, object.height, object.textHeight);
+			}
+			var initialFitTextProperties:TextFieldProperties = this._initialFitTextProperties[object] as TextFieldProperties;
+			
 			var textFormat:TextFormat = object.getTextFormat();
 			var size:Number = Number(textFormat.size? textFormat.size : 12);
 			var initialTextHeight:Number = object.textHeight;
 			while (object.textWidth > object.width || object.textHeight > object.height) {
-			
 				--size;
 				textFormat.size = size;
 				object.setTextFormat(textFormat);
 			}
 			
-			object.y += (initialTextHeight - object.textHeight) / 2;
+			object.y = initialFitTextProperties.y + ((object.height - object.textHeight) - initialFitTextProperties.offset) / 2;
 		}
 		
 		public function charactersSupported(string:String):Boolean {
@@ -300,6 +307,8 @@ package org.ranapat.localization {
 		
 		public function adjustTextFieldFont(object:TextField, replacementFont:String = "Arial", defaultFont:String = null):void {
 			var textFormat:TextFormat;
+			
+			trace("we are here... " + object.text)
 			
 			if (!this.charactersSupported(object.text)) {
 				textFormat = object.getTextFormat();
