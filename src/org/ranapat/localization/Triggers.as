@@ -4,6 +4,8 @@ package org.ranapat.localization {
 		public var fitTextWithinTextField:Boolean;
 		public var adjustTextFieldFont:Boolean;
 		public var replacementFont:String = "Arial";
+		
+		public function Triggers() {}
 	}
 
 }
