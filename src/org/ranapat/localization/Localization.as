@@ -199,7 +199,7 @@ package org.ranapat.localization {
 		}
 		
 		public function string(hash:String, replacements:* = null):String {
-			var result:String = this.get(hash);
+			var result:String = this.get(hash).replace(/\n/g, "($n)");
 			var replacementsString:String = ["number", "string"].indexOf(typeof(replacements)) >= 0? replacements : null;
 			var replacementsObject:Object = replacementsString? null : replacements;
 			
@@ -245,7 +245,7 @@ package org.ranapat.localization {
 				}
 			}
 			
-			return result;
+			return result.replace(/\(\$n\)/g, "\n");
 		}
 		
 		public function supply(hash:String, bundle:* = null, replacements:* = null):String {
@@ -292,13 +292,18 @@ package org.ranapat.localization {
 			var textFormat:TextFormat = object.getTextFormat();
 			var size:Number = Number(textFormat.size? textFormat.size : 12);
 			var initialTextHeight:Number = object.textHeight;
-			while (object.textWidth > object.width || object.textHeight > object.height) {
+			while (
+				object.textWidth - object.width > -1 * Settings.MINIMUM_WIDTH_DELTA_FOR_TEXT_FIT
+				|| object.textHeight - object.height > -1 * Settings.MINIMUM_HEIGHT_DELTA_FOR_TEXT_FIT
+			) {
 				--size;
 				textFormat.size = size;
 				object.setTextFormat(textFormat);
 			}
 			
-			object.y = initialFitTextProperties.y + ((object.height - object.textHeight) - initialFitTextProperties.offset) / 2;
+			if (!object.multiline) {
+				object.y = initialFitTextProperties.y + ((object.height - object.textHeight) - initialFitTextProperties.offset) / 2;
+			}
 		}
 		
 		public function charactersSupported(string:String):Boolean {

@@ -14,5 +14,6 @@
 			"key1": "now we are here!"
 		}
 	},
-	"key1": "global key 1! My name is %s and my test string is %f"
+	"key1": "global key 1! My name is %s and my test string is %f",
+	"key2": "line1: |value1|\nline2: |value2|\nline3: |value3|"
 }

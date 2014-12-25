@@ -75,6 +75,9 @@ package org.ranapat.localization.examples
 			TT.adjustTextFieldFont(textField, "Verdana");
 			TT.fitTextWithinTextField(textField);
 			/**/
+			
+			TT.language = "english";
+			trace("key2 is " + TT.string("key2", { value1: 1, value2: 2, value3: 3 }));
 		}
 		
 		private function init(e:Event = null):void 

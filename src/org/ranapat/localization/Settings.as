@@ -15,6 +15,9 @@ package org.ranapat.localization {
 		
 		public static const MISSING_TRANSLATION_STRING:String = "!!MISSING!!";
 		
+		public static const MINIMUM_WIDTH_DELTA_FOR_TEXT_FIT:Number = 3;
+		public static const MINIMUM_HEIGHT_DELTA_FOR_TEXT_FIT:Number = 3;
+		
 		public static const DISPLAY_OBJECT_TYPES_TO_TRANSLATE:Vector.<Class> = Vector.<Class>([
 			TextField, SimpleButton
 		]);
@@ -23,7 +26,7 @@ package org.ranapat.localization {
 		]);
 		
 		public static const SEARCH_NAMED_GROUP_PATTERNS:Vector.<RegExp> = Vector.<RegExp>([
-			/(.*)\|([a-zA-Z]+)\|(.*)$/
+			/(.*)\|([a-zA-Z0-9]+)\|(.*)$/
 		]);
 		public static const SEARCH_NAMED_GROUP_INDEXES:Vector.<uint> = Vector.<uint>([
 			2
