@@ -66,15 +66,19 @@ package org.ranapat.localization {
 			return Localization.instance? Localization.instance.supply(hash, bundle, replacements) : "";
 		}
 		
+		public static function set(object:DisplayObject, text:String):void {
+			TT.applyToDisplayObject(object, text);
+		}
+		
 		public static function applyToDisplayObject(object:DisplayObject, text:String):void {
 			if (Localization.instance) {
 				Localization.instance.applyToDisplayObject(object, text);
 			}
 		}
 		
-		public static function translateDisplayObjectContainer(object:DisplayObjectContainer):void {
+		public static function translateDisplayObjectContainer(object:DisplayObjectContainer, bundleObject:Object = null):void {
 			if (Localization.instance) {
-				Localization.instance.applyToDisplayObjectContainer(object);
+				Localization.instance.applyToDisplayObjectContainer(object, bundleObject);
 			}
 		}
 		

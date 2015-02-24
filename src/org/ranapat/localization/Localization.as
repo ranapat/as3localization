@@ -267,14 +267,16 @@ package org.ranapat.localization {
 			this.fillDisplayObject(target, text);
 		}
 		
-		public function applyToDisplayObjectContainer(object:DisplayObjectContainer):void {
+		public function applyToDisplayObjectContainer(object:DisplayObjectContainer, bundleObject:Object = null):void {
+			bundleObject = bundleObject? bundleObject : object;
+			
 			var length:uint = object.numChildren;
 			var tmp:DisplayObject;
 			for (var i:uint = 0; i < length; ++i) {
 				tmp = object.getChildAt(i);
 				
 				if (this.checkDisplayObjectForApplyTranslation(tmp)) {
-					this.fillDisplayObject(tmp, this.translate(tmp.name, Tools.getClassName(object)));
+					this.fillDisplayObject(tmp, this.translate(tmp.name, Tools.getClassName(bundleObject)));
 				}
 			}
 		}
