@@ -1,5 +1,5 @@
 package org.ranapat.localization {
-	import com.adobe.serialization.json.JSON;
+	//import com.adobe.serialization.json.JSON;
 	
 	internal class SupportedLanguage {
 		
@@ -8,7 +8,7 @@ package org.ranapat.localization {
 		public var data:Object;
 		
 		public function SupportedLanguage(data:String) {
-			try { this.data = JSON.decode(data); } catch (e:Error) { /**/ }
+			try { this.data = JSON.parse(data); } catch (e:Error) { /**/ }
 		}
 		
 		public function get latestGetSuccess():Boolean {

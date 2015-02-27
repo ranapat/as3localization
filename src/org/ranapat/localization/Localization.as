@@ -1,5 +1,5 @@
 package org.ranapat.localization {
-	import com.adobe.serialization.json.JSON;
+	//import com.adobe.serialization.json.JSON;
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.SimpleButton;
@@ -121,7 +121,7 @@ package org.ranapat.localization {
 		}
 		
 		public function get collected():String {
-			return JSON.encode(this._collected);
+			return JSON.stringify(this._collected);
 		}
 		
 		public function set supportedCharactersRegExp(value:RegExp):void {
