@@ -170,6 +170,13 @@ package org.ranapat.localization {
 			return result;
 		}
 		
+		public function getRaw(key:String, bundle:String = null, _default:String = null):* {
+			var missing:String = _default? _default : ("??" + key + "??");
+			var result:* = this._supportedLanguage? this._supportedLanguage.getRaw(key, bundle) : missing;
+			result = this._supportedLanguage && this._supportedLanguage.latestGetSuccess? result : missing;
+			return result;
+		}
+		
 		public function get(hash:String, _default:String = null):String {
 			var parts:Array = hash.split(Settings.KEY_BUNDLE_DELIMITER);
 			return this.translate(parts.shift(), parts.join(Settings.BUNDLE_BUNDLE_DELIMITER), _default);
@@ -267,7 +274,11 @@ package org.ranapat.localization {
 			this.fillDisplayObject(target, text);
 		}
 		
-		public function applyToDisplayObjectContainer(object:DisplayObjectContainer, bundleObject:Object = null):void {
+		public function applyToSimpleButton(target:SimpleButton, text:*):void {
+			this.fillSimpleButton(target, text);
+		}
+		
+		public function applyToDisplayObjectContainer(object:DisplayObjectContainer, bundleObject:* = null):void {
 			bundleObject = bundleObject? bundleObject : object;
 			
 			var length:uint = object.numChildren;
@@ -369,40 +380,49 @@ package org.ranapat.localization {
 		
 		private function fillDisplayObject(object:DisplayObject, text:String):void {
 			if (object is TextField) {
-				var tmpTextField:TextField = object as TextField;
-				tmpTextField.text = text;
-				
-				this.processTriggers(tmpTextField);
+				this.fillTextField(object as TextField, text);
 			} else if (object is SimpleButton) {
-				var tmpSimpleButton:SimpleButton = object as SimpleButton;
+				this.fillSimpleButton(object as SimpleButton, text);
+			}
+		}
+		
+		private function fillTextField(object:TextField, text:String):void {
+			object.text = text;
 				
-				var stateContainer:DisplayObjectContainer
-				var length:uint;
-				var i:uint;
-				
-				stateContainer = tmpSimpleButton.upState as DisplayObjectContainer;
-				length = stateContainer.numChildren;
-				for (i = 0; i < length; ++i) {
-					if (stateContainer.getChildAt(i) is TextField) {
-						(stateContainer.getChildAt(i) as TextField).text = text;
-						this.processTriggers(stateContainer.getChildAt(i));
-					}
+			this.processTriggers(object);
+		}
+		
+		private function fillSimpleButton(object:SimpleButton, text:*):void {
+			var stateContainer:DisplayObjectContainer;
+			var length:uint;
+			var i:uint;
+			var index:uint;
+			
+			stateContainer = object.upState as DisplayObjectContainer;
+			length = stateContainer.numChildren;
+			index = 0;
+			for (i = 0; i < length; ++i) {
+				if (stateContainer.getChildAt(i) is TextField) {
+					(stateContainer.getChildAt(i) as TextField).text = this.getTextFromAny(text, index++);
+					this.processTriggers(stateContainer.getChildAt(i));
 				}
-				stateContainer = tmpSimpleButton.downState as DisplayObjectContainer;
-				length = stateContainer.numChildren;
-				for (i = 0; i < length; ++i) {
-					if (stateContainer.getChildAt(i) is TextField) {
-						(stateContainer.getChildAt(i) as TextField).text = text;
-						this.processTriggers(stateContainer.getChildAt(i));
-					}
+			}
+			stateContainer = object.downState as DisplayObjectContainer;
+			length = stateContainer.numChildren;
+			index = 0;
+			for (i = 0; i < length; ++i) {
+				if (stateContainer.getChildAt(i) is TextField) {
+					(stateContainer.getChildAt(i) as TextField).text = this.getTextFromAny(text, index++);
+					this.processTriggers(stateContainer.getChildAt(i));
 				}
-				stateContainer = tmpSimpleButton.overState as DisplayObjectContainer;
-				length = stateContainer.numChildren;
-				for (i = 0; i < length; ++i) {
-					if (stateContainer.getChildAt(i) is TextField) {
-						(stateContainer.getChildAt(i) as TextField).text = text;
-						this.processTriggers(stateContainer.getChildAt(i));
-					}
+			}
+			stateContainer = object.overState as DisplayObjectContainer;
+			length = stateContainer.numChildren;
+			index = 0;
+			for (i = 0; i < length; ++i) {
+				if (stateContainer.getChildAt(i) is TextField) {
+					(stateContainer.getChildAt(i) as TextField).text = this.getTextFromAny(text, index++);
+					this.processTriggers(stateContainer.getChildAt(i));
 				}
 			}
 		}
@@ -417,6 +437,21 @@ package org.ranapat.localization {
 				if (this.triggers.fitTextWithinTextField) {
 					this.fitTextWithinTextField(textField);
 				}
+			}
+		}
+		
+		private function getTextFromAny(text:*, index:uint):String {
+			if (text is String) {
+				return text;
+			} else if (text is Array) {
+				var vectorString:Array = text as Array;
+				if (vectorString.length > index) {
+					return vectorString[index];
+				} else {
+					return vectorString[0];
+				}
+			} else {
+				return text;
 			}
 		}
 		

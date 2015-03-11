@@ -1,6 +1,7 @@
 package org.ranapat.localization {
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.SimpleButton;
 	import flash.text.TextField;
 	
 	public final class TT {
@@ -70,9 +71,19 @@ package org.ranapat.localization {
 			TT.applyToDisplayObject(object, text);
 		}
 		
+		public static function setButton(object:SimpleButton, text:*):void {
+			TT.applyToSimpleButton(object, text);
+		}
+		
 		public static function applyToDisplayObject(object:DisplayObject, text:String):void {
 			if (Localization.instance) {
 				Localization.instance.applyToDisplayObject(object, text);
+			}
+		}
+		
+		public static function applyToSimpleButton(object:SimpleButton, text:*):void {
+			if (Localization.instance) {
+				Localization.instance.applyToSimpleButton(object, text);
 			}
 		}
 		
@@ -102,6 +113,10 @@ package org.ranapat.localization {
 			if (Localization.instance) {
 				Localization.instance.adjustTextFieldFont(object, replacementFont, defaultFont);
 			}
+		}
+		
+		public static function getRaw(key:String, bundle:String = null, _default:String = null):* {
+			return Localization.instance? Localization.instance.getRaw(key, bundle, _default) : null;
 		}
 	}
 
