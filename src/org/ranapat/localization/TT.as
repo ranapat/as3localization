@@ -118,6 +118,14 @@ package org.ranapat.localization {
 		public static function getRaw(key:String, bundle:String = null, _default:String = null):* {
 			return Localization.instance? Localization.instance.getRaw(key, bundle, _default) : null;
 		}
+		
+		public static function call(method:String, ...args):* {
+			try {
+				return Localization.instance? (Localization.instance[method] as Function).apply(Localization.instance, args) : null;
+			} catch (e:Error) {
+				return null;
+			}
+		}
 	}
 
 }

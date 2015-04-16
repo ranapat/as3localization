@@ -319,6 +319,12 @@ package org.ranapat.localization {
 			}
 		}
 		
+		public function centerVerticallyMultilineTexts(object:TextField):void {
+			if (object.multiline) {
+				object.y += (object.height - object.textHeight) >> 1;
+			}
+		}
+		
 		public function charactersSupported(string:String):Boolean {
 			if (this._supportedCharactersRegExp) {
 				this._supportedCharactersRegExp.lastIndex = 0;
@@ -436,6 +442,9 @@ package org.ranapat.localization {
 				}
 				if (this.triggers.fitTextWithinTextField) {
 					this.fitTextWithinTextField(textField);
+				}
+				if (this.triggers.centerVerticallyMultilineTexts) {
+					this.centerVerticallyMultilineTexts(textField);
 				}
 			}
 		}
