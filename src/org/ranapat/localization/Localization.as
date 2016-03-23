@@ -303,8 +303,17 @@ package org.ranapat.localization {
 			var initialFitTextProperties:TextFieldProperties = this._initialFitTextProperties[object] as TextFieldProperties;
 			
 			var textFormat:TextFormat = object.getTextFormat();
-			var size:Number = Number(textFormat.size? textFormat.size : 12);
+			var size:uint = uint(textFormat.size? textFormat.size : 12);
+			var initialTextWidth:Number = object.textWidth;
 			var initialTextHeight:Number = object.textHeight;
+			
+			//var previousTextWidth:Number = object.textWidth;
+			//var previousTextHeight:Number = object.textHeight;
+			
+			var guess:Number = Math.max(1, Math.max(object.textWidth / object.width, object.textHeight / object.height));
+			var guessedSize:uint = Math.max(1, Math.floor(size / guess));
+			
+			/*
 			while (
 				object.textWidth - object.width > -1 * Settings.MINIMUM_WIDTH_DELTA_FOR_TEXT_FIT
 				|| object.textHeight - object.height > -1 * Settings.MINIMUM_HEIGHT_DELTA_FOR_TEXT_FIT
@@ -312,7 +321,18 @@ package org.ranapat.localization {
 				--size;
 				textFormat.size = size;
 				object.setTextFormat(textFormat);
+				
+				if (object.textWidth == previousTextWidth && object.textHeight == previousTextHeight) {
+					break;
+				} else {
+					previousTextWidth = object.textWidth;
+					previousTextHeight = object.textHeight;
+				}
 			}
+			*/
+			
+			textFormat.size = guessedSize;
+			object.setTextFormat(textFormat);
 			
 			if (!object.multiline) {
 				object.y = initialFitTextProperties.y + ((object.height - object.textHeight) - initialFitTextProperties.offset) / 2;
